@@ -27,7 +27,7 @@ A closing statement for the issue number is added no matter what the AI decides 
 
 1. Create a github workflow `.github/workflows/gpt-developer.yml`:
 
-```
+```yaml
 name: GPT Developer
 
 on:
