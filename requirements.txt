@@ -1,0 +1,3 @@
+openai
+diff_match_patch
+prettier
