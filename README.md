@@ -4,54 +4,82 @@ This is a GitHub Action that asks GPT to edit your code for you.
 
 ## Inputs
 
-### `openai_api_key`
-
+`openai_api_key`  
 **Required** Your OpenAI API key. You can get one from https://beta.openai.com/account/api-keys.
 
-### `issue_number`
-
+`issue_number`  
 **Required** The number of the issue to comment on.
 
-### `issue_text`
-
+`issue_text`  
 **Required** The text to run through GPT.
 
 ## Outputs
 
+`exit_message`  
+If the AI decides it can't do anything with the issue text, it will issue an exit message and stop the process.
+
+`commit_message`  
+When the AI is done with the code, it will commit the changes with this commit message.
+
+A closing statement for the issue number is added no matter what the AI decides to write.
+
 ## Example usage
+
+1. Create a github workflow `.github/workflows/gpt-developer.yml`:
 
 ```
 name: GPT Developer
 
 on:
   issues:
-    types: [opened]
-
-env:
-  CODE_PATH: code
+    types:
+      - labeled
 
 jobs:
   update-code-on-issue:
+    if: github.event.label.name == 'gpt-developer'
     name: Update the code according to issue text
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      with:
-        path: ${{ env.CODE_PATH }}
+      - uses: ben-z/actions-comment-on-issue@1.0.2
+        with:
+          message: "I'm working on it! - GPT Developer"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Update code
-      uses: skaramicke/gpt-developer@v1
-      id: gpt
-      with:
-        openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-        issue_number: ${{ github.event.issue.number }}
-        issue_text: "${{ github.event.issue.title}}, ${{ github.event.issue.body }}"
-        path: ${{ env.CODE_PATH }}
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Commit changes
-      uses: EndBug/add-and-commit@v7
-      with:
-        author_name: GPT Developer
-        commit_message: ${{ steps.gpt.outputs.commit_message }}
+      - name: Update code
+        uses: skaramicke/gpt-developer@a2
+        id: gpt
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_SECRET }}
+          issue_number: ${{ github.event.issue.number }}
+          issue_text: "${{ github.event.issue.title}}, ${{ github.event.issue.body }} - created by ${{ github.event.issue.user.login }}"
+          path: ${{ github.workspace }}
+
+      - uses: ben-z/actions-comment-on-issue@1.0.2
+        if: ${{ steps.gpt.outputs.exit_message != '' }}
+        with:
+          message: ${{ steps.gpt.outputs.exit_message }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit changes
+        if: ${{ steps.gpt.outputs.commit_message != '' }}
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: ${{ steps.gpt.outputs.commit_message }} - gpt-developer
+
+      - uses: ben-z/actions-comment-on-issue@1.0.2
+        if: ${{ steps.gpt.outputs.commit_message != '' }}
+        with:
+          message: 'I''ve updated the code with this commit message: "${{ steps.gpt.outputs.commit_message }}" - GPT Developer'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+2. Create an issue with the label `gpt-developer` and the action will run and update the code according to the title and description of the issue.
+3. ???
+4. Profit!!1
