@@ -103,6 +103,9 @@ while True:
             file_path = toRealPath(path, filename)
             file_contents = trimCodeBlocks("\n".join(response.split("\n")[1:]))
 
+            # ensure the path exists
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
             with open(file_path, "w") as f:
                 f.write(file_contents)
             format_files(path)
