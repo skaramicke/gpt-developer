@@ -27,13 +27,18 @@ for root, dirs, filenames in os.walk(path):
 
 commands = """commands:
   readfiles <comma separated list of file paths to view> // read the contents of the files with line numbers added to them
-  patchfile <filename to change>\\n<patch with python diff_match_patch syntax> // patch the file with the given patch
+  patchfile <filename to change>\\n<patch body> // patch the file with the given patch
   createfile <filename of new file>\\n<contents of new file> // create a new file with the given contents
   removefile <filename to remove> // remove the file
   commit <message describing change in 'this commit will <message>' syntax> // set a commit message that will be used to commit the code after the conversation ends
   comment <write a comment on the issue, with all relevant information, since this conversation is not available in the issue> // write a comment that is added to the issue when the conversation ends
   exit // ends the conversation
 If you think the issue is already resolved, use the comment command. Don't ever apologise or write any other such text. Only use commands, and never anything else. When you're done, use the commit command.
+patch syntax:
+* Each hunk begins with a line starting with @ and followed by two ranges: the old range and the new range (e.g., @@ -1,3 +1,4 @@).
+* Lines starting with + indicate additions, while lines starting with - indicate deletions.
+* Lines starting with a space (` `) indicate context lines that remain unchanged.
+* An optional line starting with `\` can follow a change line, and it will be included in the result without the trailing newline.
 """
 
 prompt = f"""Issue #{issue_number}: {issue_text}
