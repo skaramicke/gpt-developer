@@ -1,5 +1,7 @@
 name: "GPT Developer"
 description: "An AI developer doing the work for you. It performs code changes based on GitHub issues. Warning: Experimental!"
+icon: "code"
+color: "blue"
 inputs:
   openai_api_key:
     description: "OpenAI API key"
