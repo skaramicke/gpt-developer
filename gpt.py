@@ -32,8 +32,7 @@ commands = """commands:
   removefile <filename to remove>
   commit <message describing change in 'this commit will <message>' syntax>
   comment <write a comment on the issue, with all relevant information, since this conversation is not available in the issue>
-  exit <reason>
-If you think the issue is already resolved, use the exit command. Don't ever apologise or write any other such text. Only use commands, and never anything else. When you're done, use the commit command.
+If you think the issue is already resolved, use the comment command. Don't ever apologise or write any other such text. Only use commands, and never anything else. When you're done, use the commit command.
 """
 
 prompt = f"""Issue #{issue_number}: {issue_text}
@@ -131,7 +130,7 @@ while True:
             set_output("commit_message", commit_message)
             break
 
-        elif response.startswith("exit"):
+        elif response.startswith("comment"):
             exit_message = response.split("exit ")[1]
             set_output("exit_message", exit_message)
             break
