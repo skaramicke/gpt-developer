@@ -19,5 +19,5 @@ def print_github_log_message(role, text):
 
 
 def set_output(name, value):
-    os.environ["GITHUB_OUTPUT"] = os.environ.get(
-        "GITHUB_OUTPUT", "") + f"\n{name} = {value}"
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+        print(f'{name}={value}', file=fh)
