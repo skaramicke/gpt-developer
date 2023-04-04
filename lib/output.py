@@ -1,3 +1,6 @@
+import os
+
+
 def print_github_log_message(role, text):
     if role.lower() == 'assistant':
         prefix = '[Assistant]'
@@ -13,3 +16,8 @@ def print_github_log_message(role, text):
     separator = '-' * 80
 
     print(f"{color}{separator}\n{prefix}\n{text}\n{separator}{reset_color}")
+
+
+def set_output(name, value):
+    os.environ["GITHUB_OUTPUT"] = os.environ.get(
+        "GITHUB_OUTPUT", "") + f"\n{name} = {value}"

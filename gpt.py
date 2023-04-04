@@ -3,7 +3,7 @@
 import os
 import sys
 import openai
-from lib.output import print_github_log_message
+from lib.output import print_github_log_message, set_output
 from lib.patch import apply_patch
 from lib.text import toRealPath, trimCodeBlocks, format_files, format_code_with_line_numbers
 
@@ -124,12 +124,12 @@ while True:
                 "commit ")[1] + " - Closes #" + issue_number
             print_github_log_message(
                 "assistant", f"commit message: {commit_message}")
-            print(f'::set-output name=commit_message::{commit_message}')
+            set_output("commit_message", commit_message)
             break
 
         elif response.startswith("exit"):
             exit_message = response.split("exit ")[1]
-            print(f'::set-output name=exit_message::{exit_message}')
+            set_output("exit_message", exit_message)
             break
 
         else:
