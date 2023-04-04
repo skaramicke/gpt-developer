@@ -130,10 +130,14 @@ while True:
                 "assistant", f"commit message: {commit_message}")
             set_output("commit_message", commit_message)
             user_message = "Commit message set. Use the comment command to write a comment, or exit to end the process."
+
         elif response.startswith("comment"):
             comment_message = response.split("comment ")[1]
             set_output("comment_message", comment_message)
             user_message = "Comment contents set. Use the commit command to write a commit message, or exit to end the process."
+
+        elif response.startswith("exit"):
+            break
 
         else:
             user_message = f"command not recognized/\n{commands}"
