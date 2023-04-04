@@ -16,6 +16,10 @@ path = sys.argv[4]
 files = []
 for root, dirs, filenames in os.walk(path):
     for filename in filenames:
+        # skip .git and .github directories
+        if ".git" in root or ".github" in root:
+            continue
+
         # remove the path variable from the filename
         files.append(os.path.join(root, filename).replace(path, "."))
 
