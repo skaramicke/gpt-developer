@@ -2,6 +2,14 @@
 
 This is a GitHub Action that asks GPT to edit your code for you.
 
+## Quick Start
+
+1. Go to the project template: https://github.com/skaramicke/gpt-developer-project-template
+2. Click the `Use this template` button
+3. Create a new repository from the template
+4. Add your OpenAI API key as a secret to the repository with the name `OPENAI_API_SECRET`
+5. Create an issue with the label `gpt-developer` and the action will run and update the code according to the title and description of the issue.
+
 ## Inputs
 
 `openai_api_key`  
