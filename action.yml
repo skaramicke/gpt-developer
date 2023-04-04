@@ -39,8 +39,8 @@ runs:
       id: gpt
       run: |
         python $GITHUB_ACTION_PATH/gpt.py "${{ inputs.openai_api_key }}" "${{ inputs.issue_number }}" "${{ inputs.issue_text }}" "${{ inputs.path }}"
-        if [ -f "$GITHUB_ACTION_PATH/commit-message.txt" ]; then echo "commit_message=$(cat $GITHUB_ACTION_PATH/commit-message.txt)" >> $GITHUB_OUTPUT; else echo "$GITHUB_ACTION_PATH/commit-message.txt does not exist."; fi
-        if [ -f "$GITHUB_ACTION_PATH/exit-message.txt" ]; then echo "exit_message=$(cat $GITHUB_ACTION_PATH/exit-message.txt)" >> $GITHUB_OUTPUT; else echo "$GITHUB_ACTION_PATH/exit-message.txt does not exist."; fi
+        if [ -f "commit-message.txt" ]; then echo "commit_message=$(cat commit-message.txt)" >> $GITHUB_OUTPUT; else echo "commit-message.txt does not exist."; fi
+        if [ -f "exit-message.txt" ]; then echo "exit_message=$(cat exit-message.txt)" >> $GITHUB_OUTPUT; else echo "exit-message.txt does not exist."; fi
       shell: bash
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
