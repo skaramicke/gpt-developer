@@ -39,6 +39,8 @@ runs:
       id: gpt
       run: |
         python $GITHUB_ACTION_PATH/gpt.py "${{ inputs.openai_api_key }}" "${{ inputs.issue_number }}" "${{ inputs.issue_text }}" "${{ inputs.path }}"
+        test -f "$GITHUB_ACTION_PATH/commit-message.txt" && echo "commit_message=$(cat $GITHUB_ACTION_PATH/commit-message.txt)" >> $GITHUB_OUTPUT
+        test -f "$GITHUB_ACTION_PATH/exit_message.txt" && echo "exit_message=$(cat $GITHUB_ACTION_PATH/exit_message.txt)" >> $GITHUB_OUTPUT
       shell: bash
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }}

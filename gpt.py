@@ -127,12 +127,14 @@ while True:
                 "commit ")[1] + " - Closes #" + issue_number
             print_github_log_message(
                 "assistant", f"commit message: {commit_message}")
-            set_output("commit_message", commit_message)
+            with open("commit_message.txt", "w") as f:
+                f.write(commit_message)
             break
 
         elif response.startswith("comment"):
             exit_message = response.split("exit ")[1]
-            set_output("exit_message", exit_message)
+            with open("exit_message.txt", "w") as f:
+                f.write(exit_message)
             break
 
         else:
