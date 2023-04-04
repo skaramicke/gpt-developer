@@ -15,7 +15,7 @@ This is a GitHub Action that asks GPT to edit your code for you.
 
 ## Outputs
 
-`exit_message`  
+`comment_message`  
 If the AI decides it can't do anything with the issue text, it will issue an exit message and stop the process.
 
 `commit_message`  
@@ -62,9 +62,9 @@ jobs:
           path: ${{ github.workspace }}
 
       - uses: ben-z/actions-comment-on-issue@1.0.2
-        if: ${{ steps.gpt.outputs.exit_message != '' }}
+        if: ${{ steps.gpt.outputs.comment_message != '' }}
         with:
-          message: ${{ steps.gpt.outputs.exit_message }}
+          message: ${{ steps.gpt.outputs.comment_message }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit changes

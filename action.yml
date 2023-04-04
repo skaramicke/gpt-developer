@@ -19,9 +19,9 @@ outputs:
   commit_message:
     description: "The commit message"
     value: ${{ steps.gpt.outputs.commit_message }}
-  exit_message:
+  comment_message:
     description: "The exit message, in case GPT thinks it needs to stop and let you know"
-    value: ${{ steps.gpt.outputs.exit_message }}
+    value: ${{ steps.gpt.outputs.comment_message }}
 runs:
   using: "composite"
   steps:

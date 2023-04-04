@@ -26,12 +26,13 @@ for root, dirs, filenames in os.walk(path):
 ", ".join(files)
 
 commands = """commands:
-  readfiles <comma separated list of file paths to view>
-  patchfile <filename to change>\\n<patch with python diff_match_patch syntax>
-  createfile <filename of new file>\\n<contents of new file>
-  removefile <filename to remove>
-  commit <message describing change in 'this commit will <message>' syntax>
-  comment <write a comment on the issue, with all relevant information, since this conversation is not available in the issue>
+  readfiles <comma separated list of file paths to view> // read the contents of the files with line numbers added to them
+  patchfile <filename to change>\\n<patch with python diff_match_patch syntax> // patch the file with the given patch
+  createfile <filename of new file>\\n<contents of new file> // create a new file with the given contents
+  removefile <filename to remove> // remove the file
+  commit <message describing change in 'this commit will <message>' syntax> // set a commit message that will be used to commit the code after the conversation ends
+  comment <write a comment on the issue, with all relevant information, since this conversation is not available in the issue> // write a comment that is added to the issue when the conversation ends
+  exit // ends the conversation
 If you think the issue is already resolved, use the comment command. Don't ever apologise or write any other such text. Only use commands, and never anything else. When you're done, use the commit command.
 """
 
@@ -128,12 +129,11 @@ while True:
             print_github_log_message(
                 "assistant", f"commit message: {commit_message}")
             set_output("commit_message", commit_message)
-            break
-
+            user_message = "Commit message set. Use the comment command to write a comment, or exit to end the process."
         elif response.startswith("comment"):
-            exit_message = response.split("comment ")[1]
-            set_output("exit_message", exit_message)
-            break
+            comment_message = response.split("comment ")[1]
+            set_output("comment_message", comment_message)
+            user_message = "Comment contents set. Use the commit command to write a commit message, or exit to end the process."
 
         else:
             user_message = f"command not recognized/\n{commands}"
