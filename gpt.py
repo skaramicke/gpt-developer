@@ -132,7 +132,7 @@ while True:
             break
 
         elif response.startswith("comment"):
-            exit_message = response.split("exit ")[1]
+            exit_message = response.split("comment ")[1]
             with open("exit-message.txt", "w") as f:
                 f.write(exit_message)
             break
