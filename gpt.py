@@ -27,6 +27,7 @@ commands = """commands:
   createfile <filename of new file>\\n<contents of new file>
   removefile <filename to remove>
   commit <message describing change in 'this commit will <message>' syntax>
+  comment <write a comment on the issue, with all relevant information, since this conversation is not available in the issue>
   exit <reason>
 If you think the issue is already resolved, use the exit command. Don't ever apologise or write any other such text. Only use commands, and never anything else. When you're done, use the commit command.
 """
@@ -128,7 +129,7 @@ while True:
 
         elif response.startswith("exit"):
             exit_message = response.split("exit ")[1]
-            raise Exception(exit_message)
+            print(f'::set-output name=exit_message::{exit_message}')
             break
 
         else:

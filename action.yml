@@ -17,6 +17,9 @@ outputs:
   commit_message:
     description: "The commit message"
     value: ${{ steps.gpt.outputs.commit-message }}
+  exit_message:
+    description: "The exit message, in case GPT thinks it needs to stop and let you know"
+    value: ${{ steps.gpt.outputs.exit-message }}
 runs:
   using: "composite"
   steps:
@@ -35,5 +38,5 @@ runs:
     - name: "Let GPT do the work"
       id: gpt
       run: |
-        python gpt.py ${{ inputs.openai_api_key }} ${{ inputs.issue_number }} ${{ inputs.issue_text }} ${{ inputs.path }}
+        python ${{ env.GITHUB_ACTION_PATH }}/gpt.py ${{ inputs.openai_api_key }} ${{ inputs.issue_number }} ${{ inputs.issue_text }} ${{ inputs.path }}
       shell: bash
