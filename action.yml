@@ -38,5 +38,7 @@ runs:
     - name: "Let GPT do the work"
       id: gpt
       run: |
-        python ${{ env.GITHUB_ACTION_PATH }}/gpt.py ${{ inputs.openai_api_key }} ${{ inputs.issue_number }} ${{ inputs.issue_text }} ${{ inputs.path }}
+        python $GITHUB_ACTION_PATH/gpt.py ${{ inputs.openai_api_key }} ${{ inputs.issue_number }} ${{ inputs.issue_text }} ${{ inputs.path }}
       shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
