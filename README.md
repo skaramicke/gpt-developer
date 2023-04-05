@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Update code
-        uses: skaramicke/gpt-developer@v1.2
+        uses: skaramicke/gpt-developer@v1.3
         id: gpt
         with:
           openai_api_key: ${{ secrets.OPENAI_API_SECRET }}
