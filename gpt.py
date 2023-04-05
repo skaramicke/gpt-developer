@@ -143,7 +143,7 @@ while True:
         pass
 
     user_message = user_message.strip()
-    if user_message == "":
+    if user_message != "":
         print_github_log_message("user", user_message)
         messages.append({"role": "user", "content": user_message})
     else:
