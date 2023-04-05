@@ -54,6 +54,12 @@ commit This is a commit message
     commands = parse_commands(message)
     assert commands[0]['command'] == 'commit' and commands[0]['arg'] == 'This is a commit message'
 
+    # Test 6: Issuing only a read command should work just fine
+    message = "read file1.html"
+
+    commands = parse_commands(message)
+    assert commands[0]['command'] == 'read' and commands[0]['arg'] == 'file1.html'
+
     print("All tests passed")
 
 

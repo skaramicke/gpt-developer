@@ -5,7 +5,7 @@ import sys
 import openai
 from lib.output import print_github_log_message, set_output
 from lib.parser import documentation, parse_commands
-from lib.patch import apply_patch
+from lib.patch import apply_patch, patch_doc
 from lib.text import toRealPath, trimCodeBlocks, format_file, format_code_with_line_numbers
 
 openai.api_key = sys.argv[1]
@@ -31,7 +31,7 @@ commands_doc = documentation()
 prompt = f"""Issue #{issue_number}: {issue_text}
 {commands_doc}
 files: {files}
-instructions: use commands to `read`, `create`, `patch`, `remove` files and then `comment` on the issue or `commit` the changes. `exit` to stop.
+Very important instructions: You are interacting with software. Solve the issue detailed above using the commands documented above. You use commands to `read`, `create`, `patch`, `remove` files in the code and then `comment` on the issue or `commit` the changes. `exit` to stop.
 """
 
 messages = [
@@ -67,14 +67,14 @@ while True:
                 user_message += f'# {command["command"]}\n'
 
             if command["command"] == "log":
-                print_github_log_message("assistant", command["contents"])
+                pass
 
             if command["command"] == "comment":
                 set_output("comment", command["contents"])
                 user_message += f'comment stored: {command["contents"]}'
 
             if command["command"] == "commit":
-                set_output("commit", command["contents"])
+                set_output("commit", command["arg"])
                 user_message += f'commit message stored: {command["contents"]}'
 
             if command["command"] == "read":
@@ -112,19 +112,25 @@ while True:
 
                 with open(file_path, "r") as f:
                     file_contents = f.read()
-                    new_file_contents = apply_patch(
-                        file_contents, command["contents"])
-                    if new_file_contents == file_contents:
-                        user_message = f"no changes to {filename}"
-                    else:
-                        with open(file_path, "w") as write_f:
-                            write_f.write(new_file_contents)
-                        format_file(file_path)
-                        with open(file_path, "r") as formatted_f:
-                            created_file_contents = formatted_f.read()
-                            code = format_code_with_line_numbers(
-                                created_file_contents)
-                            user_message += f"patched {filename}. Result: {code}\n"
+                    try:
+                        new_file_contents = apply_patch(
+                            file_contents, command["contents"])
+                        if new_file_contents == file_contents:
+                            user_message = f"no changes to {filename}"
+                        else:
+                            with open(file_path, "w") as write_f:
+                                write_f.write(new_file_contents)
+                            format_file(file_path)
+                            with open(file_path, "r") as formatted_f:
+                                created_file_contents = formatted_f.read()
+                                code = format_code_with_line_numbers(
+                                    created_file_contents)
+                                user_message += f"patched {filename}. Result: {code}\n"
+                    except Exception as e:
+                        patch = format_code_with_line_numbers(
+                            command["contents"])
+                        raise Exception(
+                            f"error applying patch to {filename}. {e}\nYour patch:\n{patch}\n{patch_doc}")
 
             if command["command"] == "remove":
                 files = command["arg"].split(",")
@@ -139,7 +145,7 @@ while True:
     except Exception as e:
         # Create an error string where any occurrence of `path` has been replaced with a period
         error = str(e).replace(path, ".")
-        user_message = f"error: {error}"
+        user_message += f"error: {error}"
         pass
 
     user_message = user_message.strip()

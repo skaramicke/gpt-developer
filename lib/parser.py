@@ -26,6 +26,7 @@ comment: Set the comment message
     <delimiter>
 exit: Exit the program
     exit
+Notes: Remember to use delimiters that don't occur in the content or patch blocks. @@ is a bad delimiter. If you use `<<EOF`, remember to print `<<EOF` at the end too, not just `EOF`.
     '''
 
 

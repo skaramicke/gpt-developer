@@ -15,9 +15,9 @@ def print_github_log_message(role, text):
     reset_color = '\033[0m'  # Reset color
     separator = '-' * 80
 
-    print(f"{color}{separator}\n{prefix}\n{text}\n{separator}{reset_color}")
+    print(f"{color}{separator}\n{prefix}\n{text}\n{separator}{reset_color}", flush=True)
 
 
 def set_output(name, value):
     with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
-        print(f'{name}={value}', file=fh)
+        print(f'{name}={value}', file=fh, flush=True)
