@@ -24,8 +24,8 @@ def trimCodeBlocks(text):
     return text.strip("```")
 
 
-def format_files(base_path):
-    os.system(f"prettier --write {base_path}")
+def format_file(file):
+    os.system(f"prettier --write {file}")
 
 
 def format_code_with_line_numbers(code):
