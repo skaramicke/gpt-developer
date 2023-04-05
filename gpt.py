@@ -26,10 +26,10 @@ for root, dirs, filenames in os.walk(path):
 
 ", ".join(files)
 
-commands = documentation()
+commands_doc = documentation()
 
 prompt = f"""Issue #{issue_number}: {issue_text}
-{commands}
+{commands_doc}
 files: {files}
 instructions: use commands to `read`, `create`, `patch`, `remove` files and then `comment` on the issue or `commit` the changes. `exit` to stop.
 """
@@ -57,7 +57,7 @@ while True:
         commands = parse_commands(response)
 
         if len([command for command in commands if command["command"] != "log"]) == 0:
-            user_message += f"no commands found\n{commands}"
+            user_message += f"no commands found\n{commands_doc}"
 
         for command in commands:
             if command["command"] == "exit":
