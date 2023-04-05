@@ -9,24 +9,24 @@ def documentation():
 read: Read files
     read <comma separated filenames>
 create: Create a file
-    create <filename> <delimiter>
+    create <filename> <<EOF
     <contents>
-    <delimiter>
+    EOF
 patch: Patch a file
-    patch <filename> <delimiter>
+    patch <filename> <<EOF
     <unified diff patch>
-    <delimiter>
+    EOF
 remove: Remove files
     remove <comma separated filenames>
 commit: Set the commit message
     commit <message>
 comment: Set the comment message
-    comment <delimiter>
+    comment <<EOF
     <message>
-    <delimiter>
+    EOF
 exit: Exit the program
     exit
-Notes: Remember to use delimiters that don't occur in the content or patch blocks. @@ is a bad delimiter. If you use `<<EOF`, remember to print `<<EOF` at the end too, not just `EOF`.
+Notes: 
     '''
 
 
@@ -65,6 +65,11 @@ def parse_commands(message):
                 current_arg = ''
                 command_end_delimiter = arguments[0].strip()
             current_contents = []
+
+            # ChatGPT-4 is very keen on using <<EOF EOF pair as a delimiter, so let's just let it.
+            if command_end_delimiter == "<<EOF":
+                command_end_delimiter = "EOF"
+
         elif (command_end_delimiter == '' and first_word in singleline_commands) or (command_end_delimiter != '' and first_word == command_end_delimiter):
             if current_command == 'log':
                 text = ("\n".join(current_contents)).strip()
@@ -92,8 +97,11 @@ def parse_commands(message):
             current_contents.append(line)
 
     if command_end_delimiter != '':
+        unexecuted_commands = [command['command']
+                               for command in command_objects if command['command'] != 'log']
+        unexecuted_commands_string = ', '.join(unexecuted_commands)
         raise Exception(
-            f"Command `{current_command}` was not closed with delimiter `{command_end_delimiter}`.")
+            f"Command `{current_command}` was not closed with delimiter `{command_end_delimiter}`. Please issue these commands again, as they were not executed: {unexecuted_commands_string}")
 
     # Add any remaining log contents
     if current_contents:

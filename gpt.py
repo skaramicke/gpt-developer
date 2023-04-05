@@ -24,14 +24,15 @@ for root, dirs, filenames in os.walk(path):
         # remove the path variable from the filename
         files.append(os.path.join(root, filename).replace(path, "."))
 
-", ".join(files)
+files = ", ".join(files)
 
 commands_doc = documentation()
 
 prompt = f"""Issue #{issue_number}: {issue_text}
 {commands_doc}
-files: {files}
-Very important instructions: You are interacting with software. Solve the issue detailed above using the commands documented above. You use commands to `read`, `create`, `patch`, `remove` files in the code and then `comment` on the issue or `commit` the changes. `exit` to stop.
+Existing files: {files}
+You are interacting with software. Solve the issue detailed above using the commands documented above. You use commands to `read`, `create`, `patch`, `remove` files in the code and then `comment` on the issue or `commit` the changes. `exit` to stop.
+You need to use the commands. The text you write is being parsed by a custom software that executes the commands. There's no human on the other end.
 """
 
 messages = [
@@ -57,7 +58,7 @@ while True:
         commands = parse_commands(response)
 
         if len([command for command in commands if command["command"] != "log"]) == 0:
-            user_message += f"no commands found\n{commands_doc}"
+            user_message += f"You need to use the commands. The text you write is being parsed by a custom software that executes the commands. There's no human on the other end.\n{commands_doc}"
 
         for command in commands:
             if command["command"] == "exit":
@@ -99,11 +100,14 @@ while True:
                 with open(file_path, "w") as f:
                     f.write(command["contents"])
 
-                format_file(file_path)
+                formatting_errors = format_file(file_path)
 
                 with open(file_path, "r") as f:
                     code = format_code_with_line_numbers(f.read())
-                    user_message += f"created file `{filename}`:\n{code}\n"
+                    if formatting_errors:
+                        user_message += f"created file `{filename}`:\n{code}\nPlease fix the formatting errors:\n{formatting_errors}\n"
+                    else:
+                        user_message += f"created file `{filename}`:\n{code}\n"
 
             if command["command"] == "patch":
 
@@ -120,12 +124,15 @@ while True:
                         else:
                             with open(file_path, "w") as write_f:
                                 write_f.write(new_file_contents)
-                            format_file(file_path)
+                            formatting_errors = format_file(file_path)
                             with open(file_path, "r") as formatted_f:
                                 created_file_contents = formatted_f.read()
                                 code = format_code_with_line_numbers(
                                     created_file_contents)
-                                user_message += f"patched {filename}. Result: {code}\n"
+                                if formatting_errors:
+                                    user_message += f"patched {filename}. Result: {code}\nPlease fix the formatting errors:\n{formatting_errors}\n"
+                                else:
+                                    user_message += f"patched {filename}. Result: {code}\n"
                     except Exception as e:
                         patch = format_code_with_line_numbers(
                             command["contents"])

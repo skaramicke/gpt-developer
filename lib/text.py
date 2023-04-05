@@ -1,4 +1,4 @@
-
+import subprocess
 import os
 
 
@@ -25,7 +25,22 @@ def trimCodeBlocks(text):
 
 
 def format_file(file):
-    os.system(f"prettier --write {file}")
+    try:
+        subprocess.run(
+            ["prettier", "--write", file],
+            capture_output=True,
+            check=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as e:
+        error_message = (
+            f"An error occurred while formatting {file} with Prettier:\n"
+            f"Output: {e.output}\n"
+            f"Error: {e.stderr}\n"
+        )
+        return error_message
+
+    return None
 
 
 def format_code_with_line_numbers(code):
