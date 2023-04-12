@@ -1,6 +1,6 @@
 import re
 
-multiline_commands = {'create', 'patch', 'comment'}
+multiline_commands = {'write', 'comment'}
 singleline_commands = {'read', 'remove', 'commit', 'exit'}
 
 
@@ -8,13 +8,9 @@ def documentation():
     return '''Commands:
 read: Read files
     read <comma separated filenames>
-create: Create a file
+write: Create or update a file
     create <filename> <<EOF
     <contents>
-    EOF
-patch: Patch a file
-    patch <filename> <<EOF
-    <unified diff patch>
     EOF
 remove: Remove files
     remove <comma separated filenames>
@@ -26,7 +22,6 @@ comment: Set the comment message
     EOF
 exit: Exit the program
     exit
-Notes: 
     '''
 
 
@@ -130,7 +125,7 @@ Now, create a new file with the following content.
 
 We can set any delimiter we want, but it must be repeated at the end of the content.
 
-create filename.html DelimiterWordThatCanBeAnything
+write filename.html DelimiterWordThatCanBeAnything
 Lorem ipsum dolor sit amet
 DelimiterWordThatCanBeAnything
 After that, remove the newly created file.

@@ -5,7 +5,6 @@ import sys
 import openai
 from lib.output import print_github_log_message, set_output
 from lib.parser import documentation, parse_commands
-from lib.patch import apply_patch, patch_doc
 from lib.text import toRealPath, trimCodeBlocks, format_file, format_code_with_line_numbers
 
 openai.api_key = sys.argv[1]
@@ -31,7 +30,7 @@ commands_doc = documentation()
 prompt = f"""Issue #{issue_number}: {issue_text}
 {commands_doc}
 Existing files: {files}
-You are interacting with software. Solve the issue detailed above using the commands documented above. You use commands to `read`, `create`, `patch`, `remove` files in the code and then `comment` on the issue or `commit` the changes. `exit` to stop.
+You are interacting with software. Solve the issue detailed above using the commands documented above. You use commands to `read`, `write`, `remove` files in the code and then `comment` on the issue or `commit` the changes. `exit` to stop.
 You need to use the commands. The text you write is being parsed by a custom software that executes the commands. There's no human on the other end.
 """
 
@@ -64,11 +63,9 @@ while True:
             if command["command"] == "exit":
                 break
 
+            # Print all commands except log, since the AI is not aware of the log command.
             if command["command"] != "log":
                 user_message += f'# {command["command"]}\n'
-
-            if command["command"] == "log":
-                pass
 
             if command["command"] == "comment":
                 set_output("comment", command["contents"])
@@ -90,7 +87,7 @@ while True:
 
                 user_message += f"{file_contents}\n"
 
-            if command["command"] == "create":
+            if command["command"] == "write":
 
                 filename = command["arg"]
                 file_path = toRealPath(path, filename)
@@ -105,39 +102,9 @@ while True:
                 with open(file_path, "r") as f:
                     code = format_code_with_line_numbers(f.read())
                     if formatting_errors:
-                        user_message += f"created file `{filename}`:\n{code}\nPlease fix the formatting errors:\n{formatting_errors}\n"
+                        user_message += f"wrote file `{filename}`:\n{code}\nPlease fix the formatting errors:\n{formatting_errors}\n"
                     else:
-                        user_message += f"created file `{filename}`:\n{code}\n"
-
-            if command["command"] == "patch":
-
-                filename = command["arg"]
-                file_path = toRealPath(path, filename)
-
-                with open(file_path, "r") as f:
-                    file_contents = f.read()
-                    try:
-                        new_file_contents = apply_patch(
-                            file_contents, command["contents"])
-                        if new_file_contents == file_contents:
-                            user_message = f"no changes to {filename}"
-                        else:
-                            with open(file_path, "w") as write_f:
-                                write_f.write(new_file_contents)
-                            formatting_errors = format_file(file_path)
-                            with open(file_path, "r") as formatted_f:
-                                created_file_contents = formatted_f.read()
-                                code = format_code_with_line_numbers(
-                                    created_file_contents)
-                                if formatting_errors:
-                                    user_message += f"patched {filename}. Result: {code}\nPlease fix the formatting errors:\n{formatting_errors}\n"
-                                else:
-                                    user_message += f"patched {filename}. Result: {code}\n"
-                    except Exception as e:
-                        patch = format_code_with_line_numbers(
-                            command["contents"])
-                        raise Exception(
-                            f"error applying patch to {filename}. {e}\nYour patch:\n{patch}\n{patch_doc}")
+                        user_message += f"wrote file `{filename}`:\n{code}\n"
 
             if command["command"] == "remove":
                 files = command["arg"].split(",")
