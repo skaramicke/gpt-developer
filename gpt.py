@@ -57,7 +57,7 @@ while True:
         commands = parse_commands(response)
 
         if len([command for command in commands if command["command"] != "log"]) == 0:
-            user_message += f"You need to use the commands. The text you write is being parsed by a custom software that executes the commands. There's no human on the other end.\n{commands_doc}"
+            user_message += f"No commands detected in ```{response}```. You can ONLY use commands. The text you write is being parsed by a custom software that executes the commands. There's no human on the other end. If you are done processing the issue, use the command `exit`.\n{commands_doc}"
 
         for command in commands:
             if command["command"] == "exit":
@@ -73,7 +73,7 @@ while True:
 
             if command["command"] == "commit":
                 set_output("commit", command["arg"])
-                user_message += f'commit message stored: {command["contents"]}'
+                user_message += f'commit message stored: {command["arg"]}'
 
             if command["command"] == "read":
                 files = command["arg"].split(",")

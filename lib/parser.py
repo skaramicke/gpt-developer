@@ -94,9 +94,14 @@ def parse_commands(message):
     if command_end_delimiter != '':
         unexecuted_commands = [command['command']
                                for command in command_objects if command['command'] != 'log']
-        unexecuted_commands_string = ', '.join(unexecuted_commands)
+        if len(unexecuted_commands) == 0:
+            unexecuted_commands_string = ''
+        else:
+            unexecuted_commands_string = ', '.join(unexecuted_commands)
+            unexecuted_commands_string = f". Please issue these commands again, as they were not executed: {unexecuted_commands_string}"
+
         raise Exception(
-            f"Command `{current_command}` was not closed with delimiter `{command_end_delimiter}`. Please issue these commands again, as they were not executed: {unexecuted_commands_string}")
+            f"Command `{current_command}` was not closed with delimiter `{command_end_delimiter}`.{unexecuted_commands_string}")
 
     # Add any remaining log contents
     if current_contents:
