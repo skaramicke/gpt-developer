@@ -8,8 +8,8 @@ def documentation():
     return '''Commands:
 read: Read files
     read <comma separated filenames>
-write: Create or update a file
-    create <filename> <<EOF
+write: Write contents to a file a file
+    write <filename> <<EOF
     <contents>
     EOF
 remove: Remove files
