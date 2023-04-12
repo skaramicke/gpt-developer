@@ -68,11 +68,11 @@ while True:
                 user_message += f'# {command["command"]}\n'
 
             if command["command"] == "comment":
-                set_output("comment", command["contents"])
+                set_output("comment_message", command["contents"])
                 user_message += f'comment stored: {command["contents"]}'
 
             if command["command"] == "commit":
-                set_output("commit", command["arg"])
+                set_output("commit_message", command["arg"])
                 user_message += f'commit message stored: {command["arg"]}'
 
             if command["command"] == "read":
