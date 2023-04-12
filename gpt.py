@@ -11,6 +11,8 @@ openai.api_key = sys.argv[1]
 issue_number = sys.argv[2]
 issue_text = sys.argv[3]
 path = sys.argv[4]
+# Read model from sys.argv[5] defaulting to "" if not provided
+model = sys.argv[5] if len(sys.argv) > 5 else "gpt-3.5-turbo"
 
 # List complete filenames recursively
 files = []
@@ -42,7 +44,7 @@ print_github_log_message("user", prompt)
 while True:
 
     completions = openai.ChatCompletion.create(
-        model="gpt-4",
+        model=model,
         messages=messages,
     )
 

@@ -6,6 +6,9 @@ inputs:
   openai_api_key:
     description: "OpenAI API key"
     required: true
+  openai_model:
+    description: "OpenAI chat model to use, e.g. gpt-3.5-turbo or gpt-4. Defaults to gpt-3.5-turbo"
+    required: false
   issue_number:
     description: "So GPT can reference the issue number in the commit message"
     required: true

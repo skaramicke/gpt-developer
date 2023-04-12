@@ -1,6 +1,6 @@
 # GPT Developer
 
-This is a GitHub Action that asks GPT to edit your code for you.
+This is a GitHub Action that asks ChatGPT to edit your code for you.
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ This is a GitHub Action that asks GPT to edit your code for you.
 **Required** The number of the issue to comment on.
 
 `issue_text`  
-**Required** The text to run through GPT.
+**Required** The text to run through ChatGPT.
 
 ## Outputs
 
@@ -65,6 +65,7 @@ jobs:
         id: gpt
         with:
           openai_api_key: ${{ secrets.OPENAI_API_SECRET }}
+          openai_model: gpt-4
           issue_number: ${{ github.event.issue.number }}
           issue_text: "${{ github.event.issue.title}}, ${{ github.event.issue.body }} - created by ${{ github.event.issue.user.login }}"
           path: ${{ github.workspace }}
