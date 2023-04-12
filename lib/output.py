@@ -20,4 +20,4 @@ def print_github_log_message(role, text):
 
 def set_output(name, value):
     with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
-        print(f'{name}={value}', file=fh, flush=True)
+        fh.write(f"{name}={value}\n")
