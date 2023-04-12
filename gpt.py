@@ -72,7 +72,8 @@ while True:
                 user_message += f'comment stored: {command["contents"]}'
 
             if command["command"] == "commit":
-                set_output("commit_message", command["arg"])
+                set_output("commit_message",
+                           command["arg"] + " - Closes #" + issue_number)
                 user_message += f'commit message stored: {command["arg"]}'
 
             if command["command"] == "read":
